@@ -1,11 +1,15 @@
 package chaoxing.oa_demo.config;
 
+import chaoxing.oa_demo.filter.UserContextHolder;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+/**
+ * 自定义通用字段填充方法
+ */
 @Component
 public class MyMetaObjectHandler implements MetaObjectHandler {
 
@@ -15,7 +19,6 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         this.strictInsertFill(metaObject, "createBy", Long.class, getCurrentUserId());
         this.strictInsertFill(metaObject, "updateTime", LocalDateTime.class, LocalDateTime.now());
         this.strictInsertFill(metaObject, "updateBy", Long.class, getCurrentUserId());
-//        this.strictInsertFill(metaObject, "deleted", Long.class, getCurrentUserId());
     }
 
     @Override
@@ -24,8 +27,12 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         this.strictUpdateFill(metaObject, "updateBy", Long.class, getCurrentUserId());
     }
 
+    /**
+     * 获取上下文userId
+     *
+     * @return userId
+     */
     private Long getCurrentUserId() {
-//        return UserContextHolder.getUserToken().getUserId();
-        return 1L;
+        return UserContextHolder.getUserToken().getUserId();
     }
 }

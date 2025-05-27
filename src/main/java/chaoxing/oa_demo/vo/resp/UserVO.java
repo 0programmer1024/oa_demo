@@ -1,10 +1,10 @@
 package chaoxing.oa_demo.vo.resp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+/**
+ * 用户信息
+ */
 @Data
 public class UserVO {
     /**
@@ -26,10 +26,4 @@ public class UserVO {
      * 类型（10：管理员, 20:面试官）
      */
     private Integer type;
-
-    /**
-     * 密码
-     */
-    @JsonIgnore
-    private String password;
 }

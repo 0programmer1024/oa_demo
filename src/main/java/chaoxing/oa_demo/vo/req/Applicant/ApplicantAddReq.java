@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * 应聘者添加请求
+ */
 @Data
 public class ApplicantAddReq {
     /**

@@ -9,6 +9,9 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * 请求page参数
+ */
 public class PageParam {
 
     /**

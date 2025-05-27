@@ -1,19 +1,17 @@
 package chaoxing.oa_demo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
- * 
- * @TableName 用户表
+ * 用户表
  */
 @Data
-@TableName(value ="user")
+@TableName(value = "user")
 public class User implements Serializable {
     /**
      * 主键
@@ -25,11 +23,6 @@ public class User implements Serializable {
      * 用户名
      */
     private String username;
-
-    /**
-     * 姓名
-     */
-    private String name;
 
     /**
      * 密码
@@ -47,6 +40,37 @@ public class User implements Serializable {
     @TableLogic
     private Boolean deleted;
 
-    @TableField(exist = false)
+
+    /**
+     * 创建时间
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 创建人
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private Long createBy;
+
+    /**
+     * 更新时间
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    /**
+     * 更新人
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long updateBy;
+
+    /**
+     * 版本
+     */
+    @Version
+    private Long version;
+
+    @Serial
     private static final long serialVersionUID = 1L;
 }

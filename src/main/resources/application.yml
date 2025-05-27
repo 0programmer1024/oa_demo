@@ -4,6 +4,10 @@ spring:
   application:
     #应用的名称，可选
     name: oa_demo
+  servlet:
+    multipart:
+      max-file-size: 10MB       # 单个文件最大 50MB
+      max-request-size: 100MB   # 总上传请求大小最大 100MB
   datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/oa_demo?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
@@ -22,4 +26,4 @@ mybatis-plus:
       logic-delete-value: 1     # 已删除值
 
 oa:
-  path: D:\img\
+  path: D:\oa_demo_files\

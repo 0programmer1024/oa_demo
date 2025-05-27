@@ -3,15 +3,15 @@ package chaoxing.oa_demo.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 
- * @TableName applicant
+ * 应聘者信息
  */
 @Data
-@TableName(value ="applicant")
+@TableName(value = "applicant")
 public class Applicant implements Serializable {
     /**
      * ID
@@ -47,11 +47,13 @@ public class Applicant implements Serializable {
     /**
      * 联系电话
      */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String phone;
 
     /**
      * 简历路径
      */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String resumePath;
 
     /**
@@ -81,6 +83,7 @@ public class Applicant implements Serializable {
     /**
      * 版本
      */
+    @Version
     private Long version;
 
     /**
@@ -92,6 +95,7 @@ public class Applicant implements Serializable {
     /**
      * 地址
      */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String address;
 
     /**
@@ -111,6 +115,6 @@ public class Applicant implements Serializable {
     private LocalDateTime interviewTime;
 
 
-    @TableField(exist = false)
+    @Serial
     private static final long serialVersionUID = 1L;
 }

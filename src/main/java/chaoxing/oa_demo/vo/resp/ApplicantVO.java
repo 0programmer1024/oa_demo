@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * 应聘人VO
+ */
 @Data
 public class ApplicantVO {
     /**
@@ -46,12 +49,6 @@ public class ApplicantVO {
      */
 
     private Boolean gender;
-
-    /**
-     * 性别
-     */
-//    @JsonIgnore
-    private String genderName;
 
     /**
      * 出生日期
@@ -97,6 +94,4 @@ public class ApplicantVO {
 //     * 更新人
 //     */
 //    private Long updateBy;
-
-
 }

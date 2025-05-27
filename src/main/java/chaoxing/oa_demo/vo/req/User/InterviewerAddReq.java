@@ -2,6 +2,9 @@ package chaoxing.oa_demo.vo.req.User;
 
 import lombok.Data;
 
+/**
+ * 面试官添加请求
+ */
 @Data
 public class InterviewerAddReq {
     /**
