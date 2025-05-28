@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class GlobalExceptionHandler {
 
+
     /**
      * 通用异常处理
      *
