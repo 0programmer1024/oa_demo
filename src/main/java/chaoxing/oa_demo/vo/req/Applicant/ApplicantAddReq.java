@@ -2,6 +2,7 @@ package chaoxing.oa_demo.vo.req.Applicant;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 /**
@@ -12,6 +13,7 @@ public class ApplicantAddReq {
     /**
      * 用户名称
      */
+    @NotBlank(message = "用户名称不能为空")
     private String name;
 
     /**

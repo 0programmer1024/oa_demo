@@ -1,25 +1,30 @@
 package chaoxing.oa_demo.service.impl;
 
 import chaoxing.oa_demo.entity.User;
+import chaoxing.oa_demo.enums.UserType;
+import cn.hutool.core.util.StrUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor    // 这三个注解可以帮我们自动生成 get、set、有参、无参构造函数
-public class UserDetailsImpl implements UserDetails {
+@NoArgsConstructor
+public class UserDetailsImpl implements UserDetails{
  
-    private User user;    // 通过有参构造函数填充赋值的
+    private User user;
  
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(
+                StrUtil.format("ROLE_{}",Objects.requireNonNull(UserType.fromCode(user.getType())).toString())));
     }
  
     @Override
@@ -52,8 +57,6 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
     
-    // 这个方法是 @Data注解 会自动帮我们生成，用来获取 loadUserByUsername 中最后我们返回的创建UserDetailsImpl对象时传入的User。
-    // 如果你的字段包含 username和password 的话可以用强制类型转换, 把 UserDetailsImpl 转换成 User。如果不能强制类型转换的话就需要用到这个方法了
     public User getUser() {
         return user;
     }

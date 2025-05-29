@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Component
 public class JwtUtil {
-    public static final long JWT_TTL = 60 * 60 * 1000L * 24 * 14;  // 有效期14天
+    public static final long JWT_TTL = 60 * 60 * 1000L * 24;  // 有效期1天
     public static final String JWT_KEY = "SDFGjhdsfalshdfHFdsjkdsfds121232131afasdfac";
  
     public static String getUUID() {
@@ -53,6 +53,11 @@ public class JwtUtil {
  
     public static Claims parseJWT(String jwt) throws Exception {
         SecretKey secretKey = generalKey();
+        //默认进行以下操作
+        //签名校验（是否被篡改）
+        //过期时间校验（exp）
+        //签发时间校验（iat）（可选，取决于使用场景）
+        //生效时间校验（nbf）（如果有 nbf 字段）
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()

@@ -1,8 +1,10 @@
 package chaoxing.oa_demo.config;
 
-import chaoxing.oa_demo.filter.UserContextHolder;
+import chaoxing.oa_demo.common.UserToken;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -33,6 +35,8 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
      * @return userId
      */
     private Long getCurrentUserId() {
-        return UserContextHolder.getUserToken().getUserId();
+        UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserToken userToken = (UserToken) authenticationToken.getPrincipal();
+        return userToken.getId();
     }
 }

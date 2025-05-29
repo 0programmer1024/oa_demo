@@ -1,12 +1,18 @@
 package chaoxing.oa_demo.filter;
 
-import chaoxing.oa_demo.entity.User;
+import chaoxing.oa_demo.common.CustomException;
+import chaoxing.oa_demo.common.UserToken;
+import chaoxing.oa_demo.consts.RedisKeys;
+import chaoxing.oa_demo.enums.UserType;
 import chaoxing.oa_demo.mapper.UserMapper;
-import chaoxing.oa_demo.service.impl.UserDetailsImpl;
+import chaoxing.oa_demo.service.impl.RedisService;
 import chaoxing.oa_demo.utils.JwtUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import io.jsonwebtoken.Claims;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -18,41 +24,45 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
- 
+import java.util.List;
+import java.util.Objects;
+
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
+
+    private final RedisService redisService;
  
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
-        String token = request.getHeader("Authorization");
- 
-        if (!StringUtils.hasText(token) || !token.startsWith("Bearer ")) {
+//        String token = request.getHeader("Authorization");
+        String token = request.getHeader("token");
+        if (!StringUtils.hasText(token) || !token.startsWith("Bearer ")
+                || "/api/user/login".equals(request.getRequestURI()) || "undefined".equalsIgnoreCase(token)) {
             filterChain.doFilter(request, response);
             return;
         }
  
         token = token.substring(7);
  
-        String userid;
+        UserToken userToken;
         try {
             Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
+            String userTokenJson = claims.getSubject();
+            userToken = JSONUtil.toBean(userTokenJson, UserToken.class);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new CustomException(e.toString());
         }
- 
-        User user = userMapper.selectById(Integer.parseInt(userid));
- 
-        if (user == null) {
-            throw new RuntimeException("用户名未登录");
+        if(!token.equals(redisService.getValue(RedisKeys.TOKEN + userToken.getId()))){
+            throw new CustomException("Token失效");
         }
- 
-        UserDetailsImpl loginUser = new UserDetailsImpl(user);
+
+
+//        UserDetailsImpl loginUser = new UserDetailsImpl(BeanUtil.copyProperties(userToken,User.class));
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUser, null, null);
- 
+                new UsernamePasswordAuthenticationToken(userToken, null, List.of(new SimpleGrantedAuthority(
+                        StrUtil.format("ROLE_{}", Objects.requireNonNull(UserType.fromCode(userToken.getType())).toString()))));
         // 如果是有效的jwt，那么设置该用户为认证后的用户
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
  

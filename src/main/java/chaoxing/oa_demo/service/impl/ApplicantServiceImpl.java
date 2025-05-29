@@ -1,9 +1,9 @@
 package chaoxing.oa_demo.service.impl;
 
-import chaoxing.oa_demo.enums.UserType;
+import chaoxing.oa_demo.common.UserToken;
 import chaoxing.oa_demo.entity.Applicant;
 import chaoxing.oa_demo.entity.User;
-import chaoxing.oa_demo.filter.UserContextHolder;
+import chaoxing.oa_demo.enums.UserType;
 import chaoxing.oa_demo.mapper.ApplicantMapper;
 import chaoxing.oa_demo.service.ApplicantService;
 import chaoxing.oa_demo.vo.req.Applicant.ApplicantAddReq;
@@ -15,6 +15,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,7 +37,9 @@ public class ApplicantServiceImpl extends MPJBaseServiceImpl<ApplicantMapper, Ap
         queryWrapper.leftJoin(User.class, on -> on.eq(User::getId, Applicant::getInterviewerId)
                 .eq(User::getType, UserType.Interviewer.getCode())).disableSubLogicDel();
         if (interviewerFlag) {
-            Long interviewerId = UserContextHolder.getUserToken().getUserId();
+            UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            UserToken userToken = (UserToken) authenticationToken.getPrincipal();
+            Long interviewerId = userToken.getId();
             queryWrapper.eq(Applicant::getInterviewerId, interviewerId);
         } else {
             queryWrapper.like(StrUtil.isNotBlank(name), Applicant::getName, name);

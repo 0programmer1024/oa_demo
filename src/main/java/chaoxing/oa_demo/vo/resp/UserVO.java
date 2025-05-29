@@ -18,11 +18,6 @@ public class UserVO {
     private String username;
 
     /**
-     * 姓名
-     */
-    private String name;
-
-    /**
      * 类型（10：管理员, 20:面试官）
      */
     private Integer type;

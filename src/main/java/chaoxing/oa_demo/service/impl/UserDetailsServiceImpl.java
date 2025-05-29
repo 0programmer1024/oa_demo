@@ -1,8 +1,11 @@
 package chaoxing.oa_demo.service.impl;
 
+import chaoxing.oa_demo.common.CustomException;
 import chaoxing.oa_demo.entity.User;
 import chaoxing.oa_demo.mapper.UserMapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,12 +20,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
  
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<User>();
-        queryWrapper.eq("username", username);    // 这里不止可以用username，你可以自定义，主要根据你自己写的查询逻辑
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUsername, username);
         User user = userMapper.selectOne(queryWrapper);
-        if (user == null) {
-            throw new UsernameNotFoundException(username);
+        if (ObjectUtil.isNull(user)) {
+            throw new CustomException(StrUtil.format("用户名[{}]不存在", username));
         }
-        return new UserDetailsImpl(user);    // UserDetailsImpl 是我们实现的类
+        return new UserDetailsImpl(user);
     }
 }

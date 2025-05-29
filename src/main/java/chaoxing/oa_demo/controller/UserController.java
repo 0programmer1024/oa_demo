@@ -8,10 +8,10 @@ import chaoxing.oa_demo.vo.req.User.InterviewerUpdateReq;
 import chaoxing.oa_demo.vo.resp.InterviewerVO;
 import chaoxing.oa_demo.vo.resp.LoginVO;
 import chaoxing.oa_demo.vo.resp.UserVO;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +23,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 //@CrossOrigin(origins = "*")
 public class UserController {
 
@@ -35,6 +36,7 @@ public class UserController {
      * @param pageSize 每页大小
      * @return 用户信息
      */
+    @PreAuthorize("hasAnyRole('Admin','User')")
     @GetMapping("/interviewer/page")
     public R<IPage<UserVO>> page(@RequestParam int pageNo,
                                  @RequestParam int pageSize) {
@@ -60,11 +62,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public R<LoginVO> login(@RequestBody LoginReq loginReq) {
-        LoginVO loginVO = userService.login(loginReq);
-        if (StrUtil.isBlank(loginVO.getToken())) {
-            return R.error("登陆失败");
-        }
-        return R.success(loginVO);
+        return R.success(userService.login(loginReq));
     }
 
     /**

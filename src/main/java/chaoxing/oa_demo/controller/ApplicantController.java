@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -82,7 +83,7 @@ public class ApplicantController {
      * @return 应聘人更新结果
      */
     @PutMapping
-    public R<String> update(@RequestBody ApplicantUpdateReq applicantUpdateReq) {
+    public R<String> update(@RequestBody @Validated ApplicantUpdateReq applicantUpdateReq) {
         applicantService.updateById(BeanUtil.copyProperties(applicantUpdateReq, Applicant.class));
         return R.success("应聘者信息修改成功");
     }
